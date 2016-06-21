@@ -99,13 +99,13 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onArticleSearch(View view) {
 
-        //String query = etQuery.getText().toString();
+        String query = etQuery.getText().toString();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
         params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
         params.put("page", 0);
-        //params.put("q", query);
+        params.put("q", query);
 
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
