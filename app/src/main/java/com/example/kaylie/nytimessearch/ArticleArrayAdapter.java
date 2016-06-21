@@ -1,58 +1,121 @@
 package com.example.kaylie.nytimessearch;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by kaylie on 6/20/16.
  */
-public class ArticleArrayAdapter extends ArrayAdapter {
+public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapter.ViewHolder>{
 
-    public ArticleArrayAdapter(Context context, List<Article> articles){
-        super(context, android.R.layout.simple_list_item_1, articles);
+    //EndlessScrollListener endlessScrollListener;
+    List<Article> articles;
+    // Store the context for easy access
+    private Context mContext;
+
+
+    // Provide a direct reference to each of the views within a data item
+    // Used to cache the views within the item layout for fast access
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // Your holder should contain a member variable
+        // for any view that will be set as you render a row
+        public ImageView ivView;
+        public TextView tvTitle;
+
+        // We also create a constructor that accepts the entire item row
+        // and does the view lookups to find each subview
+        public ViewHolder(View itemView) {
+            // Stores the itemView in a public final member variable that can be used
+            // to access the context from any ViewHolder instance.
+            super(itemView);
+
+            ivView = (ImageView) itemView.findViewById(R.id.ivImage);
+            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+        }
     }
 
-    public View getView(int position, View convertView, ViewGroup parent){
-        // get the data item for posiiton
-        Article article = (Article)this.getItem(position);
 
-        //check to see if existing view being reused
-        //not using a recycled view -> inflate the layout
 
-        if (convertView == null){
+    // Pass in the contact array into the constructor
+    public ArticleArrayAdapter(Context context, List<Article> articles) {
+        this.articles = articles;
+        mContext = context;
+    }
 
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView  = inflater.inflate(R.layout.item_article_result,parent, false );
-        }
-        // find the image view
-        ImageView imageView = (ImageView)convertView.findViewById(R.id.ivImage);
+    // Easy access to the context object in the recyclerview
+    private Context getContext() {
+        return mContext;
+    }
+//
+//    public void setEndlessScrollListener(EndlessScrollListener endlessScrollListener) {
+//        this.endlessScrollListener = endlessScrollListener;
+//    }
 
-        // clear out recycled image from convertView from last time
+    // Inflates a layout from XML
+    @Override
+    public ArticleArrayAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Inflate the custom layout
+        View articleView = inflater.inflate(R.layout.item_article_result, parent, false);
+
+        //Return a new holder instance
+        ViewHolder viewHolder = new ViewHolder(articleView);
+        return viewHolder;
+    }
+
+    // Populating data into the item through holder
+    @Override
+    public void onBindViewHolder(ArticleArrayAdapter.ViewHolder viewHolder, int position) {
+
+        // Get the data model based on position
+        Article currArticle = articles.get(position);
+
+        //Set item view based on the data model
+        TextView textView = viewHolder.tvTitle;
+        textView.setText(currArticle.getHeadline());
+
+        ImageView imageView = viewHolder.ivView;
+
         imageView.setImageResource(0);
 
-        TextView tvTitle = (TextView)convertView.findViewById(R.id.tvTitle);
-        tvTitle.setText(article.getHeadline());
+        String imageUrl = currArticle.getThumbnail();
 
-        //populate the thumbnail image
-        String thumbnail = article.getThumbnail();
-        if(!TextUtils.isEmpty(thumbnail)){
-            Picasso.with(getContext()).load(thumbnail).into(imageView);
+        if(!TextUtils.isEmpty(imageUrl)){
+            Picasso.with(getContext()).load(imageUrl).into(imageView);
         }
 
-        return convertView;
-        //remotely download image in the background
-
-
-
     }
+
+    @Override
+    public int getItemCount() {
+        if(articles == null)
+            return 0;
+        else
+            return articles.size();
+    }
+
+//    public interface EndlessScrollListener{
+//        /**
+//         * Loads more data.
+//         * @param position
+//         * @return true loads data actually, false otherwise.
+//         */
+//        boolean onLoadMore(int position);
+//    }
 }
