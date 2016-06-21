@@ -20,7 +20,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private boolean loading = true;
     // Sets the starting page index
     private int startingPageIndex = 0;
-    StaggeredGridLayoutManager mStaggeredGridLayoutManager;
 
     RecyclerView.LayoutManager mLayoutManager;
 

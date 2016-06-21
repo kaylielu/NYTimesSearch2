@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
    @BindView(R.id.btnSearch) Button btnSearch;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    StaggeredGridLayoutManager gridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +56,25 @@ public class SearchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         // Configure the RecyclerView
         rvArticles = (RecyclerView)findViewById(R.id.rvArticles);
-//        // Add the scroll listener
-//        rvItems.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-//            @Override
-//            public void onLoadMore(int page, int totalItemsCount) {
-//
-//                // Triggered only when new data needs to be appended to the list
-//                // Add whatever code is needed to append new items to the bottom of the list
-//                customLoadMoreDataForApi(page);
-//            }
-//        });
+        gridLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        rvArticles.setLayoutManager(gridLayoutManager);
+      // Add the scroll listener
+      rvArticles.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+          @Override
+          public void onLoadMore(int page, int totalItemsCount) {
+
+              // Triggered only when new data needs to be appended to the list
+              // Add whatever code is needed to append new items to the bottom of the list
+                customLoadMoreDataFromApi(page);
+          }
+      });
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onArticleSearch(v);
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setUpViews();
@@ -75,10 +87,16 @@ public class SearchActivity extends AppCompatActivity {
         //etQuery = (EditText) findViewById(R.id.etQuery);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
+
+        rvArticles.setLayoutManager(gridLayoutManager);
         rvArticles.setAdapter(adapter);
+
         ItemClickSupport.addTo(rvArticles).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+
             @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+
+                Log.d("clicked", "clicked");
                 // Create an intent to display the article
                 Intent intent = new Intent(getApplicationContext(), ArticleActivity.class);
 
@@ -86,7 +104,18 @@ public class SearchActivity extends AppCompatActivity {
                 Article article = articles.get(position);
                 // pass in that article into intent
                 intent.putExtra("url", article.getWebUrl());
+                Log.d("called intent", "called intent");
                 startActivity(intent);
+            }
+        });
+        rvArticles.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager){
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                customLoadMoreDataFromApi(page);
+
             }
         });
 
@@ -134,10 +163,13 @@ public class SearchActivity extends AppCompatActivity {
         params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
         params.put("page", 0);
         params.put("q", query);
+        articles.clear();
 
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
                 Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults = null;
 
@@ -156,5 +188,42 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         //Toast.makeText(this, "Searching for" + query, Toast.LENGTH_LONG).show();
+    }
+
+    // Append more data into the adapter
+    // This method probably ends out a network request and appends new data items to your adapter.
+    public void customLoadMoreDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate data using the offset value as a parameter.
+        // Deserialize API response and then construct new objects to append to the adapter
+        // Add the new objects to the data source for the adapter
+        String query = etQuery.getText().toString();
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        RequestParams params = new RequestParams();
+        params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
+        params.put("page", offset);
+        params.put("q", query);
+
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                Log.d("DEBUG", response.toString());
+                JSONArray articleJsonResults = null;
+
+                try{
+
+                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    //Log.d("DEBUG", articleJsonResults.toString());
+                    articles.addAll(Article.fromJSONarray(articleJsonResults));
+                    adapter.notifyDataSetChanged();
+                    Log.d("DEBUG", articles.toString());
+
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

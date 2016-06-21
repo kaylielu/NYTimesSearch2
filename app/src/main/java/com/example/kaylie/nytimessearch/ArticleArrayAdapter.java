@@ -85,7 +85,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
 
         // Get the data model based on position
         Article currArticle = articles.get(position);
-
+        final int VISIBLE_THRESHOLD = 5;
         //Set item view based on the data model
         TextView textView = viewHolder.tvTitle;
         textView.setText(currArticle.getHeadline());
@@ -100,22 +100,13 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
             Picasso.with(getContext()).load(imageUrl).into(imageView);
         }
 
+
     }
+
 
     @Override
     public int getItemCount() {
-        if(articles == null)
-            return 0;
-        else
-            return articles.size();
+        return articles.size();
     }
 
-//    public interface EndlessScrollListener{
-//        /**
-//         * Loads more data.
-//         * @param position
-//         * @return true loads data actually, false otherwise.
-//         */
-//        boolean onLoadMore(int position);
-//    }
 }

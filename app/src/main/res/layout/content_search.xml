@@ -19,8 +19,8 @@
         android:id="@+id/btnSearch"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onArticleSearch"/>
+        android:layout_alignParentEnd="true"/>
+        <!--android:onClick="onArticleSearch"-->
 
     <EditText
         android:layout_width="wrap_content"
@@ -45,5 +45,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvArticles"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/etQuery" />
+
 </RelativeLayout>
