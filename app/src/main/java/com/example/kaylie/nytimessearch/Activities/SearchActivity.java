@@ -57,6 +57,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        Log.d("DEBUG", "debug");
         ButterKnife.bind(this);
         // Configure the RecyclerView
         rvArticles = (RecyclerView)findViewById(R.id.rvArticles);
@@ -79,11 +80,16 @@ public class SearchActivity extends AppCompatActivity {
 //                onArticleSearch(v);
 //            }
 //        });
+        // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         setUpViews();
 
     }
+
 
     public void setUpViews(){
         //btnSearch = (Button)findViewById(R.id.btnSearch);
@@ -136,9 +142,11 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d("DEBUG", "entered onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        Log.d("DEBUG", "inflated menu");
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -201,10 +209,6 @@ public class SearchActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
