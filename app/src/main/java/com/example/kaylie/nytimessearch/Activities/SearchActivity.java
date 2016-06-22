@@ -99,8 +99,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
                 public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-
-                Log.d("clicked", "clicked");
+                Log.d("DEBUG", "" + position);
                 // Create an intent to display the article
                 Intent intent = new Intent(getApplicationContext(), ArticleActivity.class);
 
@@ -108,7 +107,6 @@ public class SearchActivity extends AppCompatActivity {
                 Article article = articles.get(position);
                 // pass in that article into intent
                 intent.putExtra("url", article.getWebUrl());
-                Log.d("called intent", "called intent");
                 startActivity(intent);
             }
         });
@@ -179,7 +177,6 @@ public class SearchActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
 
-                Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults = null;
 
                 try{
@@ -188,7 +185,6 @@ public class SearchActivity extends AppCompatActivity {
                     //Log.d("DEBUG", articleJsonResults.toString());
                     articles.addAll(Article.fromJSONarray(articleJsonResults));
                     adapter.notifyDataSetChanged();
-                    Log.d("DEBUG", articles.toString());
 
                 }catch(JSONException e){
                     e.printStackTrace();
@@ -229,7 +225,6 @@ public class SearchActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
 
-                Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults = null;
 
                 try{
@@ -238,7 +233,6 @@ public class SearchActivity extends AppCompatActivity {
                     //Log.d("DEBUG", articleJsonResults.toString());
                     articles.addAll(Article.fromJSONarray(articleJsonResults));
                     adapter.notifyDataSetChanged();
-                    Log.d("DEBUG", articles.toString());
 
                 }catch(JSONException e){
                     e.printStackTrace();
@@ -263,12 +257,12 @@ public class SearchActivity extends AppCompatActivity {
         params.put("page", offset);
         params.put("q", this.query);
 
+
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
 
-                Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults = null;
 
                 try{
@@ -277,7 +271,6 @@ public class SearchActivity extends AppCompatActivity {
                     //Log.d("DEBUG", articleJsonResults.toString());
                     articles.addAll(Article.fromJSONarray(articleJsonResults));
                     adapter.notifyDataSetChanged();
-                    Log.d("DEBUG", articles.toString());
 
                 }catch(JSONException e){
                     e.printStackTrace();
