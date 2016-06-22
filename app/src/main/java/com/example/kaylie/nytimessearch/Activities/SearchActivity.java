@@ -45,12 +45,13 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-   @BindView(R.id.etQuery) EditText etQuery;
+   //@BindView(R.id.etQuery) EditText etQuery;
    @BindView(R.id.rvArticles) RecyclerView rvArticles;
-   @BindView(R.id.btnSearch) Button btnSearch;
+   //@BindView(R.id.btnSearch) Button btnSearch;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     StaggeredGridLayoutManager gridLayoutManager;
+    String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +73,12 @@ public class SearchActivity extends AppCompatActivity {
           }
       });
 
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onArticleSearch(v);
-            }
-        });
+//        btnSearch.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onArticleSearch(v);
+//            }
+//        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setUpViews();
@@ -146,6 +147,7 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
 
+                articleSearch(query);
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();
@@ -159,6 +161,40 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
+
+    }
+
+    public void articleSearch(String query){
+        this.query = query;
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        RequestParams params = new RequestParams();
+        params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
+        params.put("page", 0);
+        params.put("q", query);
+        articles.clear();
+
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                Log.d("DEBUG", response.toString());
+                JSONArray articleJsonResults = null;
+
+                try{
+
+                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    //Log.d("DEBUG", articleJsonResults.toString());
+                    articles.addAll(Article.fromJSONarray(articleJsonResults));
+                    adapter.notifyDataSetChanged();
+                    Log.d("DEBUG", articles.toString());
+
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
@@ -179,7 +215,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onArticleSearch(View view) {
 
-        String query = etQuery.getText().toString();
+        //String query = etQuery.getText().toString();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
@@ -219,13 +255,13 @@ public class SearchActivity extends AppCompatActivity {
         // Send an API request to retrieve appropriate data using the offset value as a parameter.
         // Deserialize API response and then construct new objects to append to the adapter
         // Add the new objects to the data source for the adapter
-        String query = etQuery.getText().toString();
+        //String query = etQuery.getText().toString();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
         params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
         params.put("page", offset);
-        params.put("q", query);
+        params.put("q", this.query);
 
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
