@@ -36,9 +36,8 @@ public class ArticleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("DEBUG", "rendered");
         setContentView(R.layout.activity_article);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_article);
         setSupportActionBar(toolbar);
 
         String url = getIntent().getStringExtra("url");
@@ -65,6 +64,7 @@ public class ArticleActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate menu resource file.
         getMenuInflater().inflate(R.menu.menu_share, menu);
         // Locate MenuItem with ShareActionProvider
@@ -84,26 +84,15 @@ public class ArticleActivity extends AppCompatActivity {
 
         miShare.setShareIntent(shareIntent);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        Log.d("DEBUG", "inflated menu");
-        inal SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        inflater.inflate(R.menu.menu_search_from_activity, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search_to);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnClickListener(new View.OnClickListener(){
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                // perform query here
-
-                articleSearch(query);
-                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
-                // see https://code.google.com/p/android/issues/detail?id=24599
-                searchView.clearFocus();
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public void onClick(View v) {
+                Log.d("DEBUG", "clicked on search");
+                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                startActivity(intent);
             }
         });
 

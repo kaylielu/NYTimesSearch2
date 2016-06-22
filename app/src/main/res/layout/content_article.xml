@@ -12,7 +12,6 @@
     tools:context="com.example.kaylie.nytimessearch.Activities.ArticleActivity"
     tools:showIn="@layout/activity_article">
 
-    <!-- Load the toolbar here -->
 
     <WebView
         android:id="@+id/wvArticle"

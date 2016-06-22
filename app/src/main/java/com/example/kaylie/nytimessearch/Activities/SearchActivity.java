@@ -57,7 +57,6 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        Log.d("DEBUG", "debug");
         ButterKnife.bind(this);
         // Configure the RecyclerView
         rvArticles = (RecyclerView)findViewById(R.id.rvArticles);
@@ -105,7 +104,6 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
                 public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Log.d("DEBUG", "" + position);
                 // Create an intent to display the article
                 Intent intent = new Intent(getApplicationContext(), ArticleActivity.class);
 
@@ -142,11 +140,9 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("DEBUG", "entered onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        Log.d("DEBUG", "inflated menu");
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
