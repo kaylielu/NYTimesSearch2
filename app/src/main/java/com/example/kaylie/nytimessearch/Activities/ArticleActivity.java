@@ -84,18 +84,6 @@ public class ArticleActivity extends AppCompatActivity {
 
         miShare.setShareIntent(shareIntent);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search_from_activity, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search_to);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Log.d("DEBUG", "clicked on search");
-                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
-                startActivity(intent);
-            }
-        });
-
         return super.onCreateOptionsMenu(menu);
 
     }

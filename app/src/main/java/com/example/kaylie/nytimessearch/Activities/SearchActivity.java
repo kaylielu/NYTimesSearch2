@@ -29,6 +29,7 @@ import com.example.kaylie.nytimessearch.ArticleArrayAdapter;
 import com.example.kaylie.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.example.kaylie.nytimessearch.ItemClickSupport;
 import com.example.kaylie.nytimessearch.R;
+import com.example.kaylie.nytimessearch.SpacesItemDecoration;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -53,6 +54,8 @@ public class SearchActivity extends AppCompatActivity {
     StaggeredGridLayoutManager gridLayoutManager;
     String query;
 
+    SpacesItemDecoration decoration = new SpacesItemDecoration(16);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,7 @@ public class SearchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         // Configure the RecyclerView
         rvArticles = (RecyclerView)findViewById(R.id.rvArticles);
+        rvArticles.addItemDecoration(decoration);
         gridLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
         rvArticles.setLayoutManager(gridLayoutManager);
       // Add the scroll listener
