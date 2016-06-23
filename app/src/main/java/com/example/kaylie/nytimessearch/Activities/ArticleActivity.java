@@ -15,21 +15,25 @@ import android.widget.TextView;
 
 import com.example.kaylie.nytimessearch.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ArticleActivity extends AppCompatActivity {
 
     private ShareActionProvider miShareAction;
 
+    @BindView(R.id.toolbar_article) Toolbar toolbar;
+    @BindView(R.id.toolbar_title) TextView mTitle;
+    @BindView(R.id.wvArticle) WebView webView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_article);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         String title = getIntent().getStringExtra("title");
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         mTitle.setText(title);
         String url = getIntent().getStringExtra("url");
-        WebView webView = (WebView)findViewById(R.id.wvArticle);
         webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {

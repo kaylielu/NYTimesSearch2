@@ -81,6 +81,8 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setUpViews();
 
+
+
     }
 
 
@@ -93,6 +95,40 @@ public class SearchActivity extends AppCompatActivity {
 
         rvArticles.setLayoutManager(gridLayoutManager);
         rvArticles.setAdapter(adapter);
+
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=trump&api-key=15e8378232bf4f4bad4f5408";
+
+        articles.clear();
+        adapter.notifyDataSetChanged();
+
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                JSONArray articleJsonResults = null;
+
+                try{
+
+                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    //Log.d("DEBUG", articleJsonResults.toString());
+                    articles.addAll(Article.fromJSONarray(articleJsonResults));
+                    adapter.notifyDataSetChanged();
+
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                throwable.printStackTrace();
+
+            }
+        });
+
 
         ItemClickSupport.addTo(rvArticles).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
 
@@ -109,6 +145,8 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
 
     }
 
@@ -174,6 +212,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void articleSearch(String query){
+        articles.clear();
+        adapter.notifyDataSetChanged();
         this.query = query;
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";

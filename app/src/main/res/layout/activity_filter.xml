@@ -133,8 +133,19 @@
         android:layout_height="wrap_content"
         android:text="save"
         android:id="@+id/btSave"
-        android:layout_above="@+id/cbSports"
-        android:layout_centerHorizontal="true"
-        android:onClick="onSubmit"/>
+        android:onClick="onSubmit"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/tvDate"
+        android:layout_alignLeft="@+id/btDate"
+        android:layout_alignStart="@+id/btDate"
+        android:layout_below="@+id/btDate"
+        />
 
 </RelativeLayout>

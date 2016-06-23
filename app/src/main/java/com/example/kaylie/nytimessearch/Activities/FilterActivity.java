@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kaylie.nytimessearch.DatePickerFragment;
@@ -31,8 +32,8 @@ import butterknife.ButterKnife;
 public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
 
     SearchFilters filters;
-    @BindView(R.id.spSort)
-    Spinner spinner;
+    @BindView(R.id.spSort) Spinner spinner;
+    @BindView(R.id.tvDate) TextView date;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -60,6 +61,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     // handle the date selected
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        date.setText("");
         // store the values selected into a Calendar instance
         final Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
@@ -79,6 +81,10 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
             filters.setBegin_date("" + year + "" + monthOfYear + "" + dayOfMonth);
 
         }
+
+        date.setText(monthOfYear + "/" + dayOfMonth + "/" + year );
+
+
 
 
     }
