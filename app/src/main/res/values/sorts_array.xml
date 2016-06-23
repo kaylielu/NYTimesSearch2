@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sorts_array">
-        <item></item>
         <item>Newest</item>
         <item>Oldest</item>
     </string-array>

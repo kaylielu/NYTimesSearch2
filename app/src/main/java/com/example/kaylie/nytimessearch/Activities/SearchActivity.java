@@ -2,12 +2,15 @@ package com.example.kaylie.nytimessearch.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
@@ -20,6 +23,7 @@ import com.example.kaylie.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.example.kaylie.nytimessearch.ItemClickSupport;
 import com.example.kaylie.nytimessearch.R;
 import com.example.kaylie.nytimessearch.SpacesItemDecoration;
+import com.example.kaylie.nytimessearch.models.SearchFilters;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -43,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     ArticleArrayAdapter adapter;
     StaggeredGridLayoutManager gridLayoutManager;
     String query;
+    SearchFilters filter;
 
     SpacesItemDecoration decoration = new SpacesItemDecoration(16);
 
@@ -123,18 +128,7 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    // ActivityOne.java, time to handle the result of the sub-activity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // REQUEST_CODE is defined above
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            // Extract name value from result extras
-            String name = data.getExtras().getString("name");
-            int code = data.getExtras().getInt("code", 0);
-            // Toast the name to display temporarily on screen
-            Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
-        }
-    }
+
 
 //    //Append more data into the adapter
 //    //This method probably sends out a network request and appends new data items to your adapter.
@@ -157,8 +151,9 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                Intent intent = new Intent(SearchActivity.this, FilterActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
+                launchFilter();
+
+
                 // perform query here
 
                 articleSearch(query);
@@ -178,9 +173,27 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    public void launchFilter() {
+        Intent intent = new Intent(SearchActivity.this, FilterActivity.class);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    // ActivityOne.java, time to handle the result of the sub-activity
     @Override
-    public void onActivityReenter(int resultCode, Intent data) {
-        super.onActivityReenter(resultCode, data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            filter = data.getParcelableExtra("filters");
+            String date = filter.getBegin_date();
+            String news_desk = filter.getNews_desk();
+            String sort = filter.getSort_criteria();
+
+            articleSearch(query);
+
+            Log.d("DEBUG","" + date + " " + news_desk.toString() + " " + sort );
+
+        }
     }
 
     public void articleSearch(String query){
@@ -191,6 +204,13 @@ public class SearchActivity extends AppCompatActivity {
         params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
         params.put("page", 0);
         params.put("q", query);
+        String newsDeskItems = "\"Education\" \"Health\"";
+        String newsDeskParamValue =
+                String.format("news_desk:(%s)", newsDeskItemsStr);
+        RequestParams params = new RequestParams();
+// ...
+        params.put("fq", newsDeskParamValue);
+        params.put("fq")
         articles.clear();
 
         client.get(url, params, new JsonHttpResponseHandler() {

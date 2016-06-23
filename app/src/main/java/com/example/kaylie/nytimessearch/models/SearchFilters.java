@@ -12,19 +12,18 @@ import java.util.Calendar;
  */
 public class SearchFilters implements Parcelable{
 
-    private String begin_date;
-    private ArrayList<String> news_desk;
-    private String sort_criteria;
+    private String begin_date = "";
+    private String news_desk = "";
+    private String sort_criteria = "";
 
     public SearchFilters(Parcel in) {
-        begin_date = in.readString();
-        news_desk = in.createStringArrayList();
-        sort_criteria = in.readString();
+       begin_date = in.readString();
+        news_desk = in.readString();
+      sort_criteria = in.readString();
     }
 
     public SearchFilters(){
 
-        news_desk = new ArrayList<String>();
 
     }
 
@@ -46,18 +45,17 @@ public class SearchFilters implements Parcelable{
 
     public void setBegin_date(String begin_date) {
         this.begin_date = begin_date;
-        Log.d("DEBUG", "the date is " + this.begin_date);
     }
 
-    public ArrayList<String> getNews_desk() {
+    public String getNews_desk() {
         return news_desk;
     }
 
-    public void addNews_desk_item(String item){
-        news_desk.add(item);
-    }
-    public void setNews_desk(ArrayList<String> news_desk) {
-        this.news_desk = news_desk;
+    public void addNews_deskItem(String item){
+
+        news_desk = news_desk + "\"" + item + "\"";
+
+
     }
 
     public String getSort_criteria() {
@@ -80,7 +78,7 @@ public class SearchFilters implements Parcelable{
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(begin_date);
-        out.writeStringArray((String[])news_desk.toArray());
+        out.writeString(news_desk);
         out.writeString(sort_criteria);
     }
 

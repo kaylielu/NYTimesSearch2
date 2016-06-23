@@ -1,13 +1,17 @@
 package com.example.kaylie.nytimessearch.Activities;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.kaylie.nytimessearch.DatePickerFragment;
@@ -17,17 +21,19 @@ import com.example.kaylie.nytimessearch.models.SearchFilters;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class FilterActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener{
 
     SearchFilters filters;
-    private String begin_date;
-    private ArrayList<String> news_desk;
-    private String sort_criteria;
+    @BindView(R.id.spSort) Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
+        ButterKnife.bind(this);
         filters = new SearchFilters();
     }
 
@@ -45,9 +51,25 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        this.begin_date = "" + year + "" + monthOfYear + "" + dayOfMonth;
+        filters.setBegin_date("" + year + "" + monthOfYear + "" + dayOfMonth);
 
     }
+
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                                   int pos, long id) {
+
+        filters.setSort_criteria(parent.getItemAtPosition(pos).toString());
+
+            // An item was selected. You can retrieve the selected item using
+            // parent.getItemAtPosition(pos)
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        filters.setSort_criteria("Newest");
+            // Another interface callback
+    }
+
 
 
     public void onCheckboxClicked(View view) {
@@ -56,17 +78,17 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
 
         // Check which checkbox was clicked
         switch(view.getId()) {
-            case R.id.cbDate:
+            case R.id.cbArt:
                 if (checked)
-                    filters.setBegin_date(begin_date);
-                else
-                    filters.setBegin_date("");
+                    filters.addNews_deskItem("Art");
                 break;
-            case R.id.cbSort:
+            case R.id.cbFash:
                 if (checked)
-                    filters.setSort_criteria(view.getId(spSort));
-                else
-                // I'm lactose intolerant
+                    filters.addNews_deskItem("Fashion & Style");
+                break;
+            case R.id.cbSports:
+                if(checked)
+                    filters.addNews_deskItem("Sports");
                 break;
         }
     }
@@ -75,6 +97,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     public void onSubmit(View v) {
         // Prepare data intent
         Intent data = new Intent();
+        filters.setSort_criteria(spinner.getSelectedItem().toString());
         data.putExtra("filters", filters);
 
         // Activity finished ok, return the data
