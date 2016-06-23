@@ -4,4 +4,9 @@
     <string name="search">Search</string>
     <string name="hint">Enter search query</string>
     <string name="title_activity_article">ArticleActivity</string>
+    <string name="filter_title">Filter your search!</string>
+    <string name="hint_news_desk">Enter news desks to search in</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
