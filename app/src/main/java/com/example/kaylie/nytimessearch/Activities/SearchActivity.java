@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.util.TextUtils;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -73,13 +74,6 @@ public class SearchActivity extends AppCompatActivity {
           }
       });
 
-//        btnSearch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onArticleSearch(v);
-//            }
-//        });
-        // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // Sets the Toolbar to act as the ActionBar for this Activity window.
@@ -115,31 +109,9 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        rvArticles.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager){
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                customLoadMoreDataFromApi(page);
-
-            }
-        });
 
     }
 
-
-
-//    //Append more data into the adapter
-//    //This method probably sends out a network request and appends new data items to your adapter.
-//    public void customLoadMoreDataFromApi(int offset){
-//        // Send an API request to retrieve appropriate data using the offset value as a parameter.
-//        // Deserialize API response and then construct new objects to append to the adapter
-//        // Add the new objects to data source for the adapter.
-//        articles.addAll(moreItems);
-//        int curSize = adapter.getItemCount();
-//        adapter.notifyItemRangeInserted(curSize, items.size()-1);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,11 +124,12 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
 
                 launchFilter();
+                setQuery(query);
 
 
                 // perform query here
 
-                articleSearch(query);
+                //articleSearch(query);
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();
@@ -173,8 +146,12 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    public void setQuery(String query){
+        this.query = query;
+    }
+
     public void launchFilter() {
-        Intent intent = new Intent(SearchActivity.this, FilterActivity.class);
+        Intent intent = new Intent(this, FilterActivity.class);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -201,18 +178,23 @@ public class SearchActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
+        if(!TextUtils.isEmpty(filter.getBegin_date())) {
+            params.put("begin_date", filter.getBegin_date());
+        }
         params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
         params.put("page", 0);
         params.put("q", query);
-        String newsDeskItems = "\"Education\" \"Health\"";
         String newsDeskParamValue =
-                String.format("news_desk:(%s)", newsDeskItemsStr);
-        RequestParams params = new RequestParams();
-// ...
-        params.put("fq", newsDeskParamValue);
-        params.put("fq")
-        articles.clear();
+                String.format("news_desk:(%s)", filter.getNews_desk());
+        if(!TextUtils.isEmpty(filter.getNews_desk())) {
+            params.put("fq", newsDeskParamValue);
+        }
+        params.put("sort", filter.getSort_criteria());
 
+        articles.clear();
+        adapter.notifyDataSetChanged();
+
+        Log.d("search_activity", url + "?" + params);
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -230,6 +212,12 @@ public class SearchActivity extends AppCompatActivity {
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                throwable.printStackTrace();
+
             }
         });
 
@@ -246,39 +234,6 @@ public class SearchActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onArticleSearch(View view) {
-
-        //String query = etQuery.getText().toString();
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-        RequestParams params = new RequestParams();
-        params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
-        params.put("page", 0);
-        params.put("q", query);
-        articles.clear();
-
-        client.get(url, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-
-                JSONArray articleJsonResults = null;
-
-                try{
-
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    //Log.d("DEBUG", articleJsonResults.toString());
-                    articles.addAll(Article.fromJSONarray(articleJsonResults));
-                    adapter.notifyDataSetChanged();
-
-                }catch(JSONException e){
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        //Toast.makeText(this, "Searching for" + query, Toast.LENGTH_LONG).show();
-    }
 
     // Append more data into the adapter
     // This method probably ends out a network request and appends new data items to your adapter.
@@ -294,7 +249,18 @@ public class SearchActivity extends AppCompatActivity {
         params.put("page", offset);
         params.put("q", this.query);
 
+        if(!TextUtils.isEmpty(filter.getBegin_date())) {
+            params.put("begin_date", filter.getBegin_date());
+        }
 
+        String newsDeskParamValue =
+                String.format("news_desk:(%s)", filter.getNews_desk());
+        if(!TextUtils.isEmpty(filter.getNews_desk())) {
+            params.put("fq", newsDeskParamValue);
+        }
+        params.put("sort", filter.getSort_criteria());
+
+        Log.d("search_activity", url + "?" + params);
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -307,11 +273,18 @@ public class SearchActivity extends AppCompatActivity {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     //Log.d("DEBUG", articleJsonResults.toString());
                     articles.addAll(Article.fromJSONarray(articleJsonResults));
+                    Log.d("DEBUG", articles.toString());
                     adapter.notifyDataSetChanged();
 
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                throwable.printStackTrace();
+
             }
         });
     }

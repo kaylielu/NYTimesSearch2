@@ -3,6 +3,7 @@ package com.example.kaylie.nytimessearch;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,10 +95,12 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
 
         String imageUrl = currArticle.getThumbnail();
 
-        if(!TextUtils.isEmpty(imageUrl)){
+        Log.d("IMAGE", "image url is " + imageUrl);
+        if(!TextUtils.isEmpty(imageUrl) && !imageUrl.equals("")){
             Glide.with(getContext()).load(imageUrl).into(imageView);
+        }else{
+            Glide.with(getContext()).load(R.drawable.nytplaceholder).into(imageView);
         }
-
 
     }
 

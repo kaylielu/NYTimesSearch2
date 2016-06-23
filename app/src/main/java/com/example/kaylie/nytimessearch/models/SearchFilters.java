@@ -58,6 +58,7 @@ public class SearchFilters implements Parcelable{
 
     }
 
+
     public String getSort_criteria() {
         return sort_criteria;
     }

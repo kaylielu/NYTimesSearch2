@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.kaylie.nytimessearch.Activities.FilterActivity"
-    android:id="@+id/nbhbrvelgrnnhlgflbdjjjjnhgnliuu">
+    android:id="@+id/activity_filter">
 
     <Spinner
         android:layout_width="wrap_content"
@@ -93,6 +93,39 @@
         android:layout_below="@+id/cbFash"
         android:layout_alignLeft="@+id/cbFash"
         android:layout_alignStart="@+id/cbFash"
+        android:onClick="onCheckboxClicked"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Education"
+        android:id="@+id/cbEducation"
+        android:checked="false"
+        android:layout_below="@+id/cbSports"
+        android:layout_alignLeft="@+id/cbSports"
+        android:layout_alignStart="@+id/cbSports"
+        android:onClick="onCheckboxClicked"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Health"
+        android:id="@+id/cbHealth"
+        android:checked="false"
+        android:layout_below="@+id/cbEducation"
+        android:layout_alignLeft="@+id/cbEducation"
+        android:layout_alignStart="@+id/cbEducation"
+        android:onClick="onCheckboxClicked"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Politics"
+        android:id="@+id/cbPolitics"
+        android:checked="false"
+        android:layout_below="@+id/cbHealth"
+        android:layout_alignLeft="@+id/cbHealth"
+        android:layout_alignStart="@+id/cbHealth"
         android:onClick="onCheckboxClicked"/>
 
     <Button
