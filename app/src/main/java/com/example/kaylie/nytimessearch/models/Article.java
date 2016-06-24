@@ -1,5 +1,7 @@
 package com.example.kaylie.nytimessearch.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +15,7 @@ public class Article {
     String webUrl;
     String headline;
     String thumbnail;
+    public static boolean topStories = true;
 
     public String getWebUrl() {
         return webUrl;
@@ -26,26 +29,52 @@ public class Article {
         return thumbnail;
     }
 
+    public void setTopStories(boolean set){
+        this.topStories = set;
+    }
+
+    public boolean getTopStories(){
+        return this.topStories;
+    }
 
 
     public Article(JSONObject jsonObject){
-        try{
 
-            this.webUrl = jsonObject.getString("web_url");
-            this.headline = jsonObject.getJSONObject("headline").getString("main");
+        if (topStories){
+            try{
 
-            JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+                this.webUrl = jsonObject.getString("url");
+                this.headline = jsonObject.getString("title");
+                JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+                if(multimedia.length() != 0){
+                    JSONObject multimediaJson = multimedia.getJSONObject(3);
+                    this.thumbnail = multimediaJson.getString("url");
+                }else{
+                    this.thumbnail = "";
+                }
 
-            if(multimedia.length() != 0){
-                JSONObject multimediaJson = multimedia.getJSONObject(0);
-                this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
-
-            }else{
-                this.thumbnail = "";
+            }catch( JSONException e){
+                e.printStackTrace();
             }
-        }catch( JSONException e){
-            e.printStackTrace();
+        }else {
+            try {
 
+                this.webUrl = jsonObject.getString("web_url");
+                this.headline = jsonObject.getJSONObject("headline").getString("main");
+
+                JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+
+                if (multimedia.length() != 0) {
+                    JSONObject multimediaJson = multimedia.getJSONObject(0);
+                    this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+
+                } else {
+                    this.thumbnail = "";
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+            }
         }
     }
 

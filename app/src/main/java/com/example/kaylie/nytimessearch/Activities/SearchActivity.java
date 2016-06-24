@@ -49,6 +49,7 @@ public class SearchActivity extends AppCompatActivity {
     StaggeredGridLayoutManager gridLayoutManager;
     String query;
     SearchFilters filter;
+    boolean topStories;
 
     SpacesItemDecoration decoration = new SpacesItemDecoration(16);
 
@@ -57,6 +58,7 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        topStories = true;
         ButterKnife.bind(this);
         // Configure the RecyclerView
         rvArticles = (RecyclerView)findViewById(R.id.rvArticles);
@@ -103,33 +105,6 @@ public class SearchActivity extends AppCompatActivity {
         articles.clear();
         adapter.notifyDataSetChanged();
 
-        client.get(url, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-
-                JSONArray articleJsonResults = null;
-
-                try{
-
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    //Log.d("DEBUG", articleJsonResults.toString());
-                    articles.addAll(Article.fromJSONarray(articleJsonResults));
-                    adapter.notifyDataSetChanged();
-
-                }catch(JSONException e){
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                throwable.printStackTrace();
-
-            }
-        });
-
-
         ItemClickSupport.addTo(rvArticles).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
 
             @Override
@@ -146,6 +121,8 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        articleSearch("foobar");
+
 
 
     }
@@ -161,6 +138,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
+                topStories = false;
                 launchFilter();
                 setQuery(query);
 
@@ -206,31 +184,45 @@ public class SearchActivity extends AppCompatActivity {
 
             articleSearch(query);
 
-            Log.d("DEBUG","" + date + " " + news_desk.toString() + " " + sort );
 
         }
     }
 
     public void articleSearch(String query){
+
+
         articles.clear();
         adapter.notifyDataSetChanged();
         this.query = query;
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        String url;
         RequestParams params = new RequestParams();
-        if(!TextUtils.isEmpty(filter.getBegin_date())) {
-            params.put("begin_date", filter.getBegin_date());
-        }
-        params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
-        params.put("page", 0);
-        params.put("q", query);
-        String newsDeskParamValue =
-                String.format("news_desk:(%s)", filter.getNews_desk());
-        if(!TextUtils.isEmpty(filter.getNews_desk())) {
-            params.put("fq", newsDeskParamValue);
-        }
-        params.put("sort", filter.getSort_criteria());
 
+        Log.d("DEBUG", "top stories = " + topStories);
+        if(topStories){
+
+            url = "https://api.nytimes.com/svc/topstories/v2/home.json";
+
+            Article.topStories = true;
+            params.put("api-key", "15e8378232bf4f4bad4f54081a151b80");
+            params.put("callback", "callbackTopStories");
+        }else {
+
+            url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+            Article.topStories = false;
+            if (!TextUtils.isEmpty(filter.getBegin_date())) {
+                params.put("begin_date", filter.getBegin_date());
+            }
+            params.put("api-key", "15e8378232bf4f4bad4f54081a151b80");
+            params.put("page", 0);
+            params.put("q", query);
+            String newsDeskParamValue =
+                    String.format("news_desk:(%s)", filter.getNews_desk());
+            if (!TextUtils.isEmpty(filter.getNews_desk())) {
+                params.put("fq", newsDeskParamValue);
+            }
+            params.put("sort", filter.getSort_criteria());
+        }
         articles.clear();
         adapter.notifyDataSetChanged();
 
@@ -241,16 +233,29 @@ public class SearchActivity extends AppCompatActivity {
 
 
                 JSONArray articleJsonResults = null;
+                if(topStories){
+                    try{
+                        articleJsonResults = response.getJSONArray("results");
+                        articles.addAll(Article.fromJSONarray(articleJsonResults));
+                        adapter.notifyDataSetChanged();
+                        Log.d("DEBUG", articles.toString());
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
 
-                try{
+                }else {
 
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    //Log.d("DEBUG", articleJsonResults.toString());
-                    articles.addAll(Article.fromJSONarray(articleJsonResults));
-                    adapter.notifyDataSetChanged();
 
-                }catch(JSONException e){
-                    e.printStackTrace();
+                    try {
+
+                        articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                        //Log.d("DEBUG", articleJsonResults.toString());
+                        articles.addAll(Article.fromJSONarray(articleJsonResults));
+                        adapter.notifyDataSetChanged();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -262,6 +267,7 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -283,22 +289,34 @@ public class SearchActivity extends AppCompatActivity {
         // Add the new objects to the data source for the adapter
         //String query = etQuery.getText().toString();
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        String url;
         RequestParams params = new RequestParams();
         params.put("api-key","15e8378232bf4f4bad4f54081a151b80");
         params.put("page", offset);
         params.put("q", this.query);
 
-        if(!TextUtils.isEmpty(filter.getBegin_date())) {
-            params.put("begin_date", filter.getBegin_date());
-        }
+        if(topStories){
 
-        String newsDeskParamValue =
-                String.format("news_desk:(%s)", filter.getNews_desk());
-        if(!TextUtils.isEmpty(filter.getNews_desk())) {
-            params.put("fq", newsDeskParamValue);
+            url = "https://api.nytimes.com/svc/topstories/v2/home.json";
+
+            Article.topStories = true;
+
+            params.put("callback", "callbackTopStories");
+        }else {
+
+            url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+
+            if (!TextUtils.isEmpty(filter.getBegin_date())) {
+                params.put("begin_date", filter.getBegin_date());
+            }
+
+            String newsDeskParamValue =
+                    String.format("news_desk:(%s)", filter.getNews_desk());
+            if (!TextUtils.isEmpty(filter.getNews_desk())) {
+                params.put("fq", newsDeskParamValue);
+            }
+            params.put("sort", filter.getSort_criteria());
         }
-        params.put("sort", filter.getSort_criteria());
 
         Log.d("search_activity", url + "?" + params);
         client.get(url, params, new JsonHttpResponseHandler() {
@@ -313,7 +331,7 @@ public class SearchActivity extends AppCompatActivity {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     //Log.d("DEBUG", articleJsonResults.toString());
                     articles.addAll(Article.fromJSONarray(articleJsonResults));
-                    Log.d("DEBUG", articles.toString());
+
                     adapter.notifyDataSetChanged();
 
                 }catch(JSONException e){

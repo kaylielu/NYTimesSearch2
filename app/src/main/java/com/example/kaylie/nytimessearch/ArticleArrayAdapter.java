@@ -95,7 +95,6 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
 
         String imageUrl = currArticle.getThumbnail();
 
-        Log.d("IMAGE", "image url is " + imageUrl);
         Glide.with(getContext()).load(imageUrl).placeholder(R.drawable.nytplaceholder).into(imageView);
 
     }
