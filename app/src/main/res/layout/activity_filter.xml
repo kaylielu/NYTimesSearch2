@@ -19,9 +19,10 @@
         android:layout_alignTop="@+id/textView2"
         android:layout_alignRight="@+id/btDate"
         android:layout_alignEnd="@+id/btDate"
-        android:layout_toRightOf="@+id/tvDate"
-        android:layout_toEndOf="@+id/tvDate"
-        android:background="#7DB7CD"/>
+        android:layout_toEndOf="@+id/tvFilters"
+        android:background="#7DB7CD"
+        android:textColor="#106E92"
+        android:layout_toRightOf="@+id/tvFilters" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -68,7 +69,8 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/btSave"
         android:layout_toEndOf="@+id/btSave"
-        android:background="#7DB7CD"/>
+        android:background="#7DB7CD"
+        android:textColor="#106E92"/>
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -152,7 +154,8 @@
         android:onClick="onSubmit"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textColor="#106E92"/>
+        android:textColor="#106E92"
+        android:background="#7DB7CD"/>
 
     <TextView
         android:layout_width="wrap_content"

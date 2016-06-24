@@ -23,7 +23,7 @@
     <WebView
         android:id="@+id/wvArticle"
         android:layout_width="match_parent"
-        android:layout_height="494dp"
+        android:layout_height="600dp"
         android:layout_below="@+id/include"></WebView>
 
 

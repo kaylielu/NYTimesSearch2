@@ -2,17 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#E1ECEF"><!--"@drawable/rectangle"-->
+    android:background="#E1ECEF">
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:maxLines="2"
         android:ellipsize="end"
         android:gravity="center"
+        android:padding="2dp"
         android:textColor="#106E92"/>
 
     <ImageView
@@ -20,7 +21,6 @@
         android:layout_height="125dp"
         android:id="@+id/ivImage"
         android:scaleType="centerCrop"
-        android:padding="1dp"
         android:src="@mipmap/ic_launcher"
       />
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.kaylie.nytimessearch.Activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,9 @@ public class ArticleActivity extends AppCompatActivity {
             }
 
         );
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Oxygen-Bold.ttf");
+        TextView toolbar_title = (TextView)findViewById(R.id.toolbar_title);
+        toolbar_title.setTypeface(custom_font);
 
         webView.loadUrl(url);
 

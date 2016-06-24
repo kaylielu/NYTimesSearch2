@@ -46,7 +46,7 @@ public class SearchActivity extends AppCompatActivity {
 
    //@BindView(R.id.etQuery) EditText etQuery;
    @BindView(R.id.rvArticles) RecyclerView rvArticles;
-   //@BindView(R.id.btnSearch) Button btnSearch;
+    @BindView(R.id.toolbar_title) TextView toolbar_title;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     StaggeredGridLayoutManager gridLayoutManager;
@@ -55,7 +55,7 @@ public class SearchActivity extends AppCompatActivity {
     boolean topStories;
     @BindView(R.id.toolbar_real_main) Toolbar toolbar;
 
-    SpacesItemDecoration decoration = new SpacesItemDecoration(16);
+    SpacesItemDecoration decoration = new SpacesItemDecoration(20);
 
     private final int REQUEST_CODE = 20;
     @Override
@@ -86,7 +86,7 @@ public class SearchActivity extends AppCompatActivity {
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Oxygen-Bold.ttf");
-       TextView toolbar_title = (TextView)findViewById(R.id.toolbar_title);
+
        toolbar_title.setTypeface(custom_font);
         setUpViews();
 
@@ -145,6 +145,7 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
 
                 topStories = false;
+                toolbar_title.setText(query);
                 launchFilter();
                 setQuery(query);
 
