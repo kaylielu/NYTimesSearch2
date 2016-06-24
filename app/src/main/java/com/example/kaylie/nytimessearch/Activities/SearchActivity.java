@@ -1,6 +1,7 @@
 package com.example.kaylie.nytimessearch.Activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AbsListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kaylie.nytimessearch.models.Article;
@@ -50,6 +53,7 @@ public class SearchActivity extends AppCompatActivity {
     String query;
     SearchFilters filter;
     boolean topStories;
+    @BindView(R.id.toolbar_real_main) Toolbar toolbar;
 
     SpacesItemDecoration decoration = new SpacesItemDecoration(16);
 
@@ -70,20 +74,21 @@ public class SearchActivity extends AppCompatActivity {
           @Override
           public void onLoadMore(int page, int totalItemsCount) {
 
+              //getSupportActionBar().hide();
               // Triggered only when new data needs to be appended to the list
               // Add whatever code is needed to append new items to the bottom of the list
                 customLoadMoreDataFromApi(page);
           }
-      });
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+      });
 
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Oxygen-Bold.ttf");
+       TextView toolbar_title = (TextView)findViewById(R.id.toolbar_title);
+       toolbar_title.setTypeface(custom_font);
         setUpViews();
-
-
 
     }
 
@@ -131,6 +136,7 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+        Log.d("DEBUG","inflated");
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -238,7 +244,6 @@ public class SearchActivity extends AppCompatActivity {
                         articleJsonResults = response.getJSONArray("results");
                         articles.addAll(Article.fromJSONarray(articleJsonResults));
                         adapter.notifyDataSetChanged();
-                        Log.d("DEBUG", articles.toString());
                     }catch(JSONException e){
                         e.printStackTrace();
                     }

@@ -45,9 +45,6 @@ public class ArticleActivity extends AppCompatActivity {
 
         );
 
-
-
-
         webView.loadUrl(url);
 
 

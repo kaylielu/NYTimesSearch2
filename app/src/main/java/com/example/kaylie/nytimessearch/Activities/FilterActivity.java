@@ -34,6 +34,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     SearchFilters filters;
     @BindView(R.id.spSort) Spinner spinner;
     @BindView(R.id.tvDate) TextView date;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
