@@ -19,6 +19,7 @@ The following **optional** features are implemented:
 * [x] Used the **ActionBar SearchView** or custom layout as the query box
 * [x] User can **share an article link** to their friends or email it to themselves
 * [x] Improved the user interface and experiment with image assets and/or styling and coloring
+* Changed the colors, used the Pinterest view, changed the launcher icon and changed the toolbar icon and font. 
 * [x] User can click on "settings" which allows selection of **advanced search options** to filter results
 * ^Just let it happen automatically and you can choose to not select filters too
   * [x] User can configure advanced search filters such as:
@@ -44,7 +45,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/kaylielu/NYTimesSearch2/blob/master/nytimessearch.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -52,10 +53,14 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 
+This application was challenging to build for many reasons. The first challenge was implementing RecyclerView. Because I did not understand what RecyclerView was really doing, I put my code in the wrong order, but I fixed it by putting the code for the first page in the search section and the code for subsequent pages in the load more section. My second challenge was with the AppBar. I was not sure why the AppBar was not appearing the search information, but discovered that I named two AppBars with the same id. Overall, I felt like I learned a lot because I thought about implementation more than copying and pasting from the guides. I also believe that I understand Android Studio better. 
+
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [ButterKnife](http://jakewharton.github.io/butterknife) - Field and method binding for Android Views 
+- [Glide](https://github.com/bumptech/glide) - An image loading and caching library for Android focused on smooth scrolling
 
 ## License
 
