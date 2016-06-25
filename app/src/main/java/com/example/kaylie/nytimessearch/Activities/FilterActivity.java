@@ -55,7 +55,6 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     // attach to an onclick handler to show the date picker
     public void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = new DatePickerFragment();
-        //newFragment.setStyle(DatePickerFragment.STYLE_NORMAL, );
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
@@ -91,6 +90,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     }
 
 
+    /* if an item was selected you do this*/
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
 
@@ -109,6 +109,7 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
     public void onCheckboxClicked(View view) {
     }
 
+    /*Checks checkboxes*/
     // ActivityNamePrompt.java -- launched for a result
     public void onSubmit(View v) {
         // Prepare data intent
@@ -169,7 +170,6 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
                 // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.example.kaylie.nytimessearch.Activities/http/host/path")
         );
-        //AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
@@ -188,7 +188,6 @@ public class FilterActivity extends AppCompatActivity implements DatePickerDialo
                 // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.example.kaylie.nytimessearch.Activities/http/host/path")
         );
-        //AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
 }

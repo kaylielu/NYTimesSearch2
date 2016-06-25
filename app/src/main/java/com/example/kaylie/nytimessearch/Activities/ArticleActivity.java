@@ -45,6 +45,8 @@ public class ArticleActivity extends AppCompatActivity {
             }
 
         );
+
+        /* Sets font*/
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Oxygen-Bold.ttf");
         TextView toolbar_title = (TextView)findViewById(R.id.toolbar_title);
         toolbar_title.setTypeface(custom_font);

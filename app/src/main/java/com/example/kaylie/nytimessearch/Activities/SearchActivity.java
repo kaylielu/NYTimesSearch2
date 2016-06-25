@@ -44,7 +44,6 @@ import cz.msebera.android.httpclient.util.TextUtils;
 
 public class SearchActivity extends AppCompatActivity {
 
-   //@BindView(R.id.etQuery) EditText etQuery;
    @BindView(R.id.rvArticles) RecyclerView rvArticles;
     @BindView(R.id.toolbar_title) TextView toolbar_title;
     ArrayList<Article> articles;
@@ -58,6 +57,8 @@ public class SearchActivity extends AppCompatActivity {
     SpacesItemDecoration decoration = new SpacesItemDecoration(20);
 
     private final int REQUEST_CODE = 20;
+
+    /* What happens at the start*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +75,6 @@ public class SearchActivity extends AppCompatActivity {
           @Override
           public void onLoadMore(int page, int totalItemsCount) {
 
-              //getSupportActionBar().hide();
               // Triggered only when new data needs to be appended to the list
               // Add whatever code is needed to append new items to the bottom of the list
                 customLoadMoreDataFromApi(page);
@@ -92,11 +92,9 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-
+    /* Sets up the the different views*/
     public void setUpViews(){
-        //btnSearch = (Button)findViewById(R.id.btnSearch);
-        //gvResults = (GridView)findViewById(R.id.gvResults);
-        //etQuery = (EditText) findViewById(R.id.etQuery);
+
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
 
@@ -133,6 +131,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
+    /* Inflates the menu*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -149,10 +148,6 @@ public class SearchActivity extends AppCompatActivity {
                 launchFilter();
                 setQuery(query);
 
-
-                // perform query here
-
-                //articleSearch(query);
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();
@@ -173,11 +168,13 @@ public class SearchActivity extends AppCompatActivity {
         this.query = query;
     }
 
+    /* launches filter activity which gets a result*/
     public void launchFilter() {
         Intent intent = new Intent(this, FilterActivity.class);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
+    /* Gets result of filter activity*/
     // ActivityOne.java, time to handle the result of the sub-activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -195,6 +192,7 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    /* Searches for an article for the first time*/
     public void articleSearch(String query){
 
 
@@ -205,7 +203,6 @@ public class SearchActivity extends AppCompatActivity {
         String url;
         RequestParams params = new RequestParams();
 
-        Log.d("DEBUG", "top stories = " + topStories);
         if(topStories){
 
             url = "https://api.nytimes.com/svc/topstories/v2/home.json";
@@ -233,7 +230,6 @@ public class SearchActivity extends AppCompatActivity {
         articles.clear();
         adapter.notifyDataSetChanged();
 
-        Log.d("search_activity", url + "?" + params);
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -335,7 +331,6 @@ public class SearchActivity extends AppCompatActivity {
                 try{
 
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    //Log.d("DEBUG", articleJsonResults.toString());
                     articles.addAll(Article.fromJSONarray(articleJsonResults));
 
                     adapter.notifyDataSetChanged();

@@ -8,8 +8,6 @@
     android:background="#7DB7CD"
     tools:context=".Activities.SearchActivity">
 
-        <!-- Load the toolbar here -->
-
 
     <include layout="@layout/content_search" />
 
